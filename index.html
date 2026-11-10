@@ -290,10 +290,6 @@ html.fs-on,html.fs-on body{overflow:hidden}
 .prompt .q small{display:block;color:var(--chalk-dim);font-size:11.5px;font-family:var(--f-sans);direction:ltr;text-align:left}
 footer{border-top:1px solid var(--rule);margin-top:48px;padding-block:20px;color:var(--chalk-dim);font-size:13px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
-.selbar{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));z-index:24;background:var(--paper);color:var(--paper-ink);border-top:3px solid var(--mark);padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));display:flex;gap:10px;align-items:center;box-shadow:0 -8px 24px rgba(0,0,0,.35)}
-.selbar .t{min-width:0;flex:1;font-size:14px}
-.selbar .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media (min-width:1000px){.selbar{display:none}}
 .howto{background:var(--ink-2);border:1px solid var(--rule);border-radius:var(--r);padding:10px 14px;font-size:14px}
 .howto .scope{color:var(--chalk-dim);font-size:13px;margin-top:4px}
 .board .hd{font-weight:700;font-size:12px;fill:var(--chalk)}
@@ -427,7 +423,6 @@ h3{font-weight:600;letter-spacing:-.005em}
 .rnn-bar i{background:var(--blue)}
 .ttip{background:var(--navy);color:#F2F5FB;border-radius:12px;padding:10px 12px;box-shadow:0 12px 28px rgba(1,19,59,.25)}
 .ttip b{color:#A9B7D4}.ttip i.ink{background:#F2F5FB!important}.ttip em{color:#A9B7D4}
-.selbar{border-top-color:var(--blue)}
 .panel{border-radius:var(--r-lg) var(--r-lg) 0 0}
 @media (min-width:900px){.panel{border-radius:0}}
 
@@ -478,7 +473,6 @@ h2{font-weight:750;letter-spacing:-.02em}
 .panel{background:var(--ink-2);color:var(--chalk)}
 .panel .sheet,.side .sheet{background:var(--ink-2)}
 .ttip{background:#232A52;border:1px solid #39417a}
-.selbar{background:var(--ink-2);color:var(--chalk)}
 .scrim{background:rgba(3,5,15,.7)}
 /* board: a slightly deeper canvas, links never white */
 .board{background:#121630;border:1px solid var(--rule);box-shadow:none}
@@ -535,8 +529,6 @@ a:not(.go):not(.tab):not(.brandmark):not([aria-current]){color:inherit}
 .side .pbtn{background:#E9EFFB;color:#00339E}.side .pbtn:hover{background:#dde6f8}
 .side .go{background:var(--blue);color:#fff}
 .side .q{background:#F2F4F8!important;color:#0E1726}
-.selbar{background:#fff;color:#0E1726}.selbar .t span{color:#5B667C}
-.selbar .pbtn{background:#E9EFFB;color:#00339E}
 
 /* no focus box around board labels on click; keyboard users get a thicker dot instead */
 .board [data-node]:focus,.board [data-node]:focus-visible{outline:none}
@@ -573,6 +565,35 @@ a:not(.go):not(.tab):not(.brandmark):not([aria-current]){color:inherit}
 
 .tag-pill{display:inline-flex;align-items:center;font-size:12px;font-weight:600;color:#DCE3F5;background:#262D55;border:1px solid #39417a;border-radius:6px;padding:3px 9px;line-height:1.3}
 .file .tag-pill{margin-bottom:8px}
+
+/* ===== v68 mobile fixes: filters wrap, compare chart rows, day-chart scrub, tooltip swatches ===== */
+.trend svg{max-width:100%;height:auto;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.trend svg .thit{cursor:crosshair}
+@media (max-width:640px){
+  /* every filter option visible, no horizontal scroll: tabs on a 2-column grid, segs as equal-width buttons */
+  .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;overflow:visible;padding-bottom:0}
+  .tabs .tab{text-align:center;justify-content:center;min-width:0;white-space:normal;line-height:1.2}
+  .controls{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+  .controls>*{min-width:0}
+  .conn{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+  .seg,.conn .seg,.fs-bar .seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);width:100%;max-width:100%;overflow:visible}
+  .seg button,.conn .seg button,.fs-bar .seg button{white-space:normal;line-height:1.2;padding:9px 6px;text-align:center;min-width:0}
+  .controls .dd,.controls .dd-btn{width:100%}
+
+  /* compare chart: name, then the full-width track, then FR / AR / gap under their headers */
+  .dp-row{grid-template-columns:76px 76px minmax(0,1fr);grid-template-areas:"n n n" "t t t";column-gap:8px;row-gap:4px;padding:9px 0 7px;min-height:0}
+  .dp-name{grid-area:n;white-space:normal;overflow:visible;font-size:13.5px}
+  .dp-track{grid-area:t;height:18px;margin:0 4px}
+  .dp-vals{display:contents}
+  .dp-vals>span{grid-row:3;text-align:left}
+  .dp-vals>span:first-child{grid-column:1}.dp-vals>span:last-child{grid-column:2}
+  .dp-gap{grid-row:3;grid-column:3;text-align:right;min-width:0}
+  .dp-head{grid-template-areas:"x x x" "t t t";row-gap:2px;padding:0 0 2px}
+  .dp-head>span:first-child{display:none}
+  .dp-head .dp-vals>span,.dp-head .dp-gap{grid-row:1;font-size:11.5px}
+  .dp-head .dp-axis{grid-area:t;height:20px;margin:0 4px}
+  .dp-head .dp-axis span{top:3px}
+}
 </style>
 
 </head>
@@ -590,7 +611,6 @@ a:not(.go):not(.tab):not(.brandmark):not([aria-current]){color:inherit}
 <main class="wrap" id="app"></main>
 <footer><div class="wrap" id="foot"></div></footer>
 <nav class="bnav" id="bnav"></nav>
-<div id="selbar"></div>
 <div id="overlay"></div>
 
 <script>
@@ -1167,6 +1187,16 @@ function buildGraph(){
   return {nodes:bs.map(({b,s})=>({id:"b"+b.i,label:b.name,sub:s.n>0?pctTxt(s.named,s.n):""})), edges, A, bs, pair:true};
 }
 let _cv; function textW(s, px, wt=400){ _cv=_cv||document.createElement("canvas").getContext("2d"); _cv.font=`${wt} ${px}px ${getComputedStyle(document.body).getPropertyValue("--f-sans")||"sans-serif"}`; return _cv.measureText(s||"").width; }
+function wrapPx(s, maxPx, px=13.5, wt=700){
+  // wrap by measured width (bold, so a selected label still fits); long single words break at . - / or by letter
+  const fits = x => textW(x,px,wt) <= maxPx, out=[]; let cur="";
+  const pieces=[]; s.split(" ").forEach(w=>{ if(fits(w)){ pieces.push(w); return; }
+    let part=""; for(const ch of w){ if(part && !fits(part+ch)){ pieces.push(part+"\u00AD"); part=ch; } else part+=ch; } if(part) pieces.push(part); });
+  pieces.forEach(x=>{ const glue = cur.endsWith("\u00AD") ? "" : " "; const nx = cur ? cur+glue+x : x;
+    if(cur && !fits(nx.replace(/\u00AD/g,""))){ out.push(cur); cur=x; } else cur=nx; });
+  if(cur) out.push(cur);
+  return out.map(l=>l.endsWith("\u00AD")?l.slice(0,-1)+"-":l.replace(/\u00AD/g,""));
+}
 function wrapText(s, max){
   const w=s.split(" "), out=[]; let cur="";
   w.forEach(x=>{ if((cur+" "+x).trim().length>max && cur){ out.push(cur); cur=x; } else cur=(cur+" "+x).trim(); });
@@ -1290,8 +1320,9 @@ function renderBoard(shrink=0){
     const narrow = W<640;
     compact = fit && (availH-64)/Math.max(G.left.length, G.right.length) < 30;
     const colW = (nodes,h) => Math.max(textW(h[0],12,700), ...wrapText(h[1],40).map(l=>textW(l,11.5)), ...nodes.map(n=>compact ? textW(n.label,13.5)+(n.sub?6+textW(n.sub,11.5):0) : Math.max(textW(n.label,13.5), n.sub?textW(n.sub,11.5):0)));
-    const lw = narrow ? Math.round(W*0.38) : Math.min(W*0.4, colW(G.left, G.hdrL||(S.conn==="need"?t().hdr.need:t().hdr.brand))+40);
-    const rw = narrow ? Math.round(W*0.27) : Math.min(W*0.35, colW(G.right, G.hdrR||(S.conn==="need"?t().hdr.brand:t().hdr.dom))+40);
+    const longWord = nodes => Math.max(0, ...nodes.flatMap(n=>n.label.split(" ").map(w=>textW(w,13.5,700))));
+    const lw = narrow ? Math.round(Math.min(W*0.5, Math.max(W*0.38, longWord(G.left)+22))) : Math.min(W*0.4, colW(G.left, G.hdrL||(S.conn==="need"?t().hdr.need:t().hdr.brand))+40);
+    const rw = narrow ? Math.round(Math.min(W*0.4, Math.max(W*0.27, longWord(G.right)+20))) : Math.min(W*0.35, colW(G.right, G.hdrR||(S.conn==="need"?t().hdr.brand:t().hdr.dom))+40);
     const rows = Math.max(G.left.length, G.right.length), rh = fit?Math.max(16,(availH-64)/rows):narrow?52:Math.max(36, Math.min(52, Math.floor((window.innerHeight-200)/rows))), hdr=40, H = rows*rh+24+hdr;
     const yAt = (i,len) => 12 + hdr + (H-24-hdr)*(i+0.5)/len;
     const hd = t().hdr, hl = G.hdrL || (S.conn==="need"?hd.need:hd.brand), hr = G.hdrR || (S.conn==="need"?hd.brand:(RD()?tx("hdrDom"):hd.dom));
@@ -1302,8 +1333,8 @@ function renderBoard(shrink=0){
       return `<path data-a="${e.a}" data-b="${e.b}" pathLength="1" class="edge ${(S.sel&&(e.a===S.sel||e.b===S.sel))?"on":""}" stroke-width="${sw(e.k)}" d="M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}"/>`; }).join("");
     const lchars = narrow ? Math.max(12, Math.floor((lw-16)/6.4)) : 200, rchars = narrow ? Math.max(10, Math.floor((rw-14)/6.8)) : 200;
     svg = `<svg viewBox="0 0 ${W} ${H}" height="${H}">${head(lw-10,"end",hl,lchars)}${head(W-rw+10,"start",hr,rchars)}${edges}
-      ${G.left.map(n=>nodeG(n,pos[n.id][0],pos[n.id][1],"end",wrapText(n.label,lchars))).join("")}
-      ${G.right.map(n=>nodeG(n,pos[n.id][0],pos[n.id][1],"start",wrapText(n.label,rchars))).join("")}</svg>`;
+      ${G.left.map(n=>nodeG(n,pos[n.id][0],pos[n.id][1],"end",narrow?wrapPx(n.label,lw-14):wrapText(n.label,lchars))).join("")}
+      ${G.right.map(n=>nodeG(n,pos[n.id][0],pos[n.id][1],"start",narrow?wrapPx(n.label,rw-14):wrapText(n.label,rchars))).join("")}</svg>`;
   }
   const legend = `<div class="legend"><span>${t().thick}</span></div>`;
   const _fitCheck = () => { if(fit && shrink<400){ const over = el.scrollHeight - el.clientHeight; if(over>1) return renderBoard(shrink+over+2); } };
@@ -1315,18 +1346,8 @@ function labelOf(id){
   const k=id[0], i=+id.slice(1);
   if(k==="n") return needName(D.prompts[i]); if(k==="b") return D.brands[i].name; return D.domains[i];
 }
-function renderSelbar(G){
-  const el=document.getElementById("selbar");
-  if(!S.sel || S.view!=="explorer"){ el.innerHTML=""; return; }
-  const id=S.sel, k=id[0], i=+id.slice(1), A=G.A;
-  let name="", line="", btn="";
-  if(k==="b"){ const b=D.brands[i], s=stats(b,A); name=b.name; line=t().namedSent(pv(s.named,s.n),nf(s.n),t().sectorOf[S.sector]); btn=`<button type="button" class="go" style="margin:0" data-brand="${b.slug}">${t().openSheet}</button>`; }
-  else if(k==="n"){ const p=D.prompts[i]; name=needName(p); line=`<span lang="ar" dir="rtl">${esc(p.ar)}</span>`; btn=`<button type="button" class="pbtn" data-jump>${t().details}</button>`; }
-  else { const As=A.filter(a=>a[SI()].includes(i)); name=D.domains[i]; line=tx("citedSent")(pv(As.length,A.length),nf(A.length),t().sectorOf[S.sector]); btn=`<button type="button" class="pbtn" data-jump>${t().details}</button>`; }
-  el.innerHTML=`<div class="selbar"><div class="t"><b>${esc(name)}</b><span>${line}</span></div>${btn}<button type="button" class="pbtn" data-clear aria-label="${t().clear}">✕</button></div>`;
-}
 function renderSide(G){
-  renderSelbar(G); _renderSide(G);
+  _renderSide(G);
   const sd=document.getElementById("side"); if(sd){ sd.style.top = Math.min(S.fs?70:80, window.innerHeight - sd.offsetHeight - 20) + "px"; }
 }
 function _renderSide(G){
@@ -1437,7 +1458,7 @@ function viewMethod(){
   </section>`;
 }
 function refusalChart(){
-  const dates=D.dates, W=Math.max(300, Math.min(1170, document.documentElement.clientWidth-80)), H=190, lw=30, top=24, bh=H-top-22, cw=(W-lw)/D.meta.days;
+  const dates=D.dates, W=Math.max(300, Math.min(1170, document.documentElement.clientWidth-80)), H=190+(W<560?14:0), lw=30, top=24+(W<560?14:0), bh=H-top-22, cw=(W-lw)/D.meta.days;
   const by={}; D.refusals.forEach(r=>by[r.date+r.engine]=r);
   const mx=Math.max(...D.refusals.map(r=>r.refusals+r.lost),10);
   const Y=v=>top+bh-bh*v/mx;
@@ -1458,7 +1479,7 @@ function refusalChart(){
   }
   const ticks=[0,Math.round(mx/2),mx];
   return `<div class="trend rf"><svg viewBox="0 0 ${W} ${H}" width="${W}">
-   <g font-size="11.5" font-weight="600"><circle cx="${lw+6}" cy="9" r="5" fill="var(--gpt-d)"/><text x="${lw+15}" y="13" fill="var(--paper-ink)">ChatGPT</text><circle cx="${lw+86}" cy="9" r="5" fill="var(--gem-d)"/><text x="${lw+95}" y="13" fill="var(--paper-ink)">Gemini</text><text x="${lw+160}" y="13" fill="var(--paper-dim)" font-weight="400">${t().refus}, ${S.lang==="fr"?"teinte claire":"light shade"} = ${t().lost}</text></g>
+   <g font-size="11.5" font-weight="600"><circle cx="${lw+6}" cy="9" r="5" fill="var(--gpt-d)"/><text x="${lw+15}" y="13" fill="var(--paper-ink)">ChatGPT</text><circle cx="${lw+86}" cy="9" r="5" fill="var(--gem-d)"/><text x="${lw+95}" y="13" fill="var(--paper-ink)">Gemini</text><text x="${W<560?lw:lw+160}" y="${W<560?29:13}" fill="var(--paper-dim)" font-weight="400">${t().refus}, ${S.lang==="fr"?"teinte claire":"light shade"} = ${t().lost}</text></g>
    ${ticks.map(v=>`<line x1="${lw}" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--paper-2)"/><text x="${lw-6}" y="${Y(v)+4}" text-anchor="end" font-size="10.5" fill="var(--paper-dim)">${v}</text>`).join("")}
    ${bars}
    ${[1,7,14,21,28].map(d=>`<text x="${lw+(d-0.5)*cw}" y="${H-4}" text-anchor="middle" font-size="10.5" fill="var(--paper-dim)">${S.lang==="fr"?"J":"D"}${d}</text>`).join("")}
@@ -1525,7 +1546,7 @@ function trendChart(b){
     const path=ok.map((p,i)=>`${i?"L":"M"}${X(p.d)} ${Y(p[k])}`).join(" ");
     return `<path d="${path}" fill="none" stroke="${c}" stroke-width="2"/>`+ok.map(p=>`<circle cx="${X(p.d)}" cy="${Y(p[k])}" r="3.5" fill="${c}" stroke="${c}" stroke-width="1.6" data-tdot="${p.d}"/>`).join(""); };
   const fmtD = iso => new Intl.DateTimeFormat(S.lang==="fr"?"fr-FR":"en-GB",{day:"numeric",month:"short"}).format(new Date(iso+"T12:00:00"));
-  const tip = p => `<b>${S.lang==="fr"?"Jour":"Day"} ${p.d+1} · ${fmtD(D.dates[p.d])}</b><span><i class="ink"></i>${t().mNamed} : ${pctTxt(p.kN,p.n)} (${p.kN}/${p.n})</span><span><i style="background:#E0A400"></i>${t().mFirst} : ${pctTxt(p.kF,p.n)} (${p.kF}/${p.n})</span>${p.nR?`<em>${t().refTip(p.nR)}</em>`:""}`;
+  const tip = p => `<b>${S.lang==="fr"?"Jour":"Day"} ${p.d+1} · ${fmtD(D.dates[p.d])}</b><span><i style="background:var(--s-named)"></i>${t().mNamed} : ${pctTxt(p.kN,p.n)} (${p.kN}/${p.n})</span><span><i style="background:var(--s-first)"></i>${t().mFirst} : ${pctTxt(p.kF,p.n)} (${p.kF}/${p.n})</span>${p.nR?`<em>${t().refTip(p.nR)}</em>`:""}`;
   const hits = pts.filter(p=>p.n>0).map(p=>`<rect class="thit" data-td="${p.d}" data-tip="${esc(tip(p))}" x="${X(p.d)-cw/2}" y="${top}" width="${cw}" height="${ph}" fill="transparent"/>`).join("");
   const fut = D.meta.days - D.dates.length;
   return `<div class="trend"><svg viewBox="0 0 ${W} ${H}" width="${W}" role="img">
@@ -1578,7 +1599,7 @@ function render(scroll){
   shell();
   const app=document.getElementById("app");
   app.innerHTML = S.view==="explorer"?viewExplorer():S.view==="marques"?viewBrands():S.view==="methode"?viewMethod():viewHome();
-  if(S.view==="explorer") renderBoard(); else document.getElementById("selbar").innerHTML="";
+  if(S.view==="explorer") renderBoard();
   if(scroll && lastView!==S.view+S.sector) window.scrollTo(0,0);
   lastView=S.view+S.sector;
   if(S.jump){ const id=S.jump; S.jump=null;
@@ -1595,7 +1616,7 @@ document.addEventListener("click", ev=>{
   if(el=q("[data-close]")){ S.brand=null; renderPanel(); const back = S.view==="explorer"?"explorer-"+S.sector:S.view; history.replaceState(null,"","#"+back); return; }
   if(el=q("[data-share]")){ const url=location.href; const done=()=>toast(t().copied);
     try{ navigator.clipboard.writeText(url).then(done,()=>toast(url)); }catch(e){ toast(url); } return; }
-  if(el=q(".thit")){ trendTip(el); return; }
+  if(el=q(".thit")){ if(Date.now()-scrubEnd>400) trendTip(el); return; }
   if(el=q("[data-pm]")){ S.pm=el.dataset.pm; renderPanel(true); return; }
   if(el=q("[data-combo]")){ S.combo=el.dataset.combo; renderPanel(true); return; }
   if(el=q("[data-casei]")){ S.caseI=+el.dataset.casei; render(false); return; }
@@ -1607,7 +1628,9 @@ document.addEventListener("click", ev=>{
   if(el=q("[data-fs]")){ setFs(!S.fs); return; }
   if(el=q("[data-jump]")){ document.getElementById("side")?.scrollIntoView({behavior:"smooth",block:"start"}); return; }
   if(el=q("[data-clear]")){ S.sel=null; renderBoard(); return; }
-  if(el=q("[data-node]")){ S.sel = S.sel===el.dataset.node?null:el.dataset.node; renderBoard(); return; }
+  if(el=q("[data-node]")){ S.sel = S.sel===el.dataset.node?null:el.dataset.node; renderBoard();
+    if(S.sel && window.innerWidth<1000 && !S.fs){ const sd=document.getElementById("side"); if(sd){ const y=sd.getBoundingClientRect().top+scrollY-72; window.scrollTo({top:Math.max(0,y),behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}); } }
+    return; }
   if(!q(".search")) document.querySelectorAll(".results").forEach(r=>r.hidden=true);
 });
 document.addEventListener("keydown", ev=>{
@@ -1646,6 +1669,25 @@ function trendTip(rect){
   const svg=box.querySelector("svg"), sc=svg.getBoundingClientRect().width/svg.viewBox.baseVal.width, px=x*sc;
   const w=tt.offsetWidth, bw=box.clientWidth; tt.style.left=(px+14+w<=bw ? px+14 : Math.max(0,px-14-w))+"px";
 }
+/* press and slide across a day chart to scrub; the tooltip follows the finger */
+function hitAt(box, cx){ let best=null, bd=1e9;
+  box.querySelectorAll(".thit").forEach(r=>{ const b=r.getBoundingClientRect(); const d = cx<b.left ? b.left-cx : cx>b.right ? cx-b.right : 0; if(d<bd){ bd=d; best=r; } });
+  return best; }
+let scrub=null;
+document.addEventListener("pointerdown", ev=>{ const svg=ev.target.closest?.(".trend svg"); if(!svg) return;
+  const box=svg.closest(".trend"); scrub={box, id:ev.pointerId, moved:false, x:ev.clientX, touch:ev.pointerType!=="mouse"};
+  try{ svg.setPointerCapture(ev.pointerId); }catch(e){}
+  trendTip(hitAt(box, ev.clientX)); });
+document.addEventListener("pointermove", ev=>{ if(!scrub || ev.pointerId!==scrub.id) return;
+  if(Math.abs(ev.clientX-scrub.x)>4) scrub.moved=true;
+  const r=hitAt(scrub.box, ev.clientX); if(r) trendTip(r); });
+const endScrub = ev=>{ if(!scrub || ev.pointerId!==scrub.id) return; const s=scrub; scrub=null;
+  // a slide hides the tip on release; a plain tap keeps it, like before
+  if(s.moved && (s.touch || ev.type!=="pointerup")){ trendTip(null); scrubEnd=Date.now(); }
+  else if(ev.type==="pointercancel") trendTip(null); };
+let scrubEnd=0;
+document.addEventListener("pointerup", endScrub);
+document.addEventListener("pointercancel", endScrub);
 document.addEventListener("mouseover", ev=>{ const r=ev.target.closest?.(".thit"); if(r) trendTip(r); else if(document.querySelector(".trend.on") && !ev.target.closest?.(".trend")) trendTip(null); });
 document.addEventListener("mouseover", ev=>{ if(!canHover) return; const n=ev.target.closest?.("#board [data-node]"); hover(n?n.dataset.node:null); });
 window.addEventListener("hashchange", route);
