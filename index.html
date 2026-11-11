@@ -521,14 +521,8 @@ a:not(.go):not(.tab):not(.brandmark):not([aria-current]){color:inherit}
 .board.has-hov .edge.hov{stroke-dasharray:1;stroke-dashoffset:1;animation:drawEdge .55s var(--ease) forwards}
 .board.draw.has-hov .edge.hov{animation:drawEdge .55s var(--ease) forwards}
 @media (prefers-reduced-motion:reduce){.board.has-hov .edge.hov{animation:none;stroke-dasharray:none;stroke-dashoffset:0}}
-/* the detail panel on Explore is light */
-.side{--ink:#FBFBF8; --ink-2:#FFFFFF; --ink-3:#E9EFFB; --rule:#E2E4E0; --chalk:#0E1726; --chalk-dim:#5B667C;
-  --paper:#FFFFFF; --paper-2:#EDEEEB; --paper-ink:#0E1726; --paper-dim:#5B667C; color-scheme:light}
-.side .sheet{background:#fff;color:#0E1726;border-color:#E2E4E0;box-shadow:0 18px 40px rgba(0,0,0,.35)}
-.side .sheet .v,.side .sheet td,.side .sheet b{color:#0E1726}
-.side .pbtn{background:#E9EFFB;color:#00339E}.side .pbtn:hover{background:#dde6f8}
-.side .go{background:var(--blue);color:#fff}
-.side .q{background:#F2F4F8!important;color:#0E1726}
+/* the detail panel on Explore is dark, like the brand file (v70; it was a white card from v55 to v69) */
+.side .sheet{background:#161A33;border:1px solid var(--rule);box-shadow:var(--shadow)}
 
 /* no focus box around board labels on click; keyboard users get a thicker dot instead */
 .board [data-node]:focus,.board [data-node]:focus-visible{outline:none}
@@ -608,6 +602,24 @@ a:not(.go):not(.tab):not(.brandmark):not([aria-current]){color:inherit}
 .results button{display:flex;align-items:center;gap:12px}
 .sr-logo{width:52px;height:30px;padding:3px 5px}.sr-logo.mono{width:30px;font-size:10px}
 @media (max-width:640px){.bcard .bc-logo{width:56px;height:34px}.ph-logo{width:76px;height:44px}}
+
+/* ===== v70 review pass 1 ===== */
+/* the public page has no wrapper to reset this: the header rule stopped 8px short of each edge */
+body{margin:0}
+/* header opaque enough that the blue selected buttons do not glow through it while scrolling */
+.top{background:rgba(13,16,36,.97)}
+/* mobile nav: the current page is amber and bold (blue on navy was 2.7:1, the dimmest item in the bar) */
+.bnav a[aria-current="page"]{color:var(--amber);font-weight:700}
+/* language switch: 44px touch target on phones and tablets */
+@media (max-width:899.98px){.top .wrap{padding-block:8px}.lang button{min-width:44px;min-height:44px;font-size:14px}}
+/* counters: 3 + 2 between 600 and 900px, five columns clipped the figures */
+@media (min-width:600px) and (max-width:899.98px){.counters{grid-template-columns:repeat(6,1fr)}.counter,.counter.wide{grid-column:span 2}.counter:nth-child(n+4){grid-column:span 3}}
+/* search field: a focus state that can be seen */
+.search input:focus{border-color:var(--amber)!important}
+/* brands page: the rank stays visible on phones */
+@media (max-width:640px){.bcard{grid-template-columns:auto auto minmax(0,1fr);grid-template-areas:"rk lg nm" "v v v" "bar bar bar";column-gap:8px}.bc-rk{display:block;min-width:0}.bcard .bc-logo{width:48px;height:30px}}
+/* the brand file takes focus when it opens */
+.panel:focus{outline:none}
 </style>
 
 </head>
@@ -948,8 +960,14 @@ const ICONS = {
  marques:'<svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h11M4 18h7"/></svg>',
  methode:'<svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg>'
 };
+function setTitle(){
+  const site="Baromètre IA Algérie", x=t();
+  const p = S.brand ? S.brand.name : S.view==="explorer" ? `${x.nav.explorer}, ${x.sector[S.sector]}` : S.view==="marques" ? x.brandsH : S.view==="methode" ? x.mH : "";
+  document.title = p ? `${p} · ${site}` : site;
+}
 function shell(){
   document.documentElement.lang = S.lang;
+  setTitle();
   const base = S.view.startsWith("explorer") ? "explorer" : S.view;
   const items = ["accueil","explorer","marques","methode"].map(k=>{
     const href = k==="explorer" ? `#explorer-${S.sector}` : `#${k}`;
@@ -1213,10 +1231,10 @@ function wrapPx(s, maxPx, px=13.5, wt=700){
   if(cur) out.push(cur);
   return out.map(l=>l.endsWith("\u00AD")?l.slice(0,-1)+"-":l.replace(/\u00AD/g,""));
 }
-function wrapText(s, max){
+function wrapText(s, max, lines=3){
   const w=s.split(" "), out=[]; let cur="";
   w.forEach(x=>{ if((cur+" "+x).trim().length>max && cur){ out.push(cur); cur=x; } else cur=(cur+" "+x).trim(); });
-  if(cur) out.push(cur); return out.slice(0,3).map((l,i,arr)=> i===2 && out.length>3 ? l+"…" : l);
+  if(cur) out.push(cur); return out.slice(0,lines).map((l,i,arr)=> i===lines-1 && out.length>lines ? l+"…" : l);
 }
 function renderBoard(shrink=0){
   const el=document.getElementById("board"); if(!el) return;
@@ -1339,15 +1357,17 @@ function renderBoard(shrink=0){
     const longWord = nodes => Math.max(0, ...nodes.flatMap(n=>n.label.split(" ").map(w=>textW(w,13.5,700))));
     const lw = narrow ? Math.round(Math.min(W*0.5, Math.max(W*0.38, longWord(G.left)+22))) : Math.min(W*0.4, colW(G.left, G.hdrL||(S.conn==="need"?t().hdr.need:t().hdr.brand))+40);
     const rw = narrow ? Math.round(Math.min(W*0.4, Math.max(W*0.27, longWord(G.right)+20))) : Math.min(W*0.35, colW(G.right, G.hdrR||(S.conn==="need"?t().hdr.brand:t().hdr.dom))+40);
-    const rows = Math.max(G.left.length, G.right.length), rh = fit?Math.max(16,(availH-64)/rows):narrow?52:Math.max(36, Math.min(52, Math.floor((window.innerHeight-200)/rows))), hdr=40, H = rows*rh+24+hdr;
-    const yAt = (i,len) => 12 + hdr + (H-24-hdr)*(i+0.5)/len;
     const hd = t().hdr, hl = G.hdrL || (S.conn==="need"?hd.need:hd.brand), hr = G.hdrR || (S.conn==="need"?hd.brand:(RD()?tx("hdrDom"):hd.dom));
-    const head = (x,anchor,h,chars)=>`<text class="hd" x="${x}" y="16" text-anchor="${anchor}">${esc(h[0])}</text>${wrapText(h[1],Math.min(chars,40)).map((l,i)=>`<text class="sub" x="${x}" y="${30+i*12}" text-anchor="${anchor}">${esc(l)}</text>`).join("")}`;
+    const lchars = narrow ? Math.max(12, Math.floor((lw-16)/6.4)) : 200, rchars = narrow ? Math.max(10, Math.floor((rw-14)/6.8)) : 200;
+    // on phones the column headers wrap on as many lines as they need (they were cut at 3 with an ellipsis) and the rows start lower
+    const hLines = narrow ? 9 : 3, hdr = narrow ? Math.max(40, 4+12*Math.max(wrapText(hl[1],Math.min(lchars,40),hLines).length, wrapText(hr[1],Math.min(rchars,40),hLines).length)) : 40;
+    const rows = Math.max(G.left.length, G.right.length), rh = fit?Math.max(16,(availH-64)/rows):narrow?52:Math.max(36, Math.min(52, Math.floor((window.innerHeight-200)/rows))), H = rows*rh+24+hdr;
+    const yAt = (i,len) => 12 + hdr + (H-24-hdr)*(i+0.5)/len;
+    const head = (x,anchor,h,chars)=>`<text class="hd" x="${x}" y="16" text-anchor="${anchor}">${esc(h[0])}</text>${wrapText(h[1],Math.min(chars,40),hLines).map((l,i)=>`<text class="sub" x="${x}" y="${30+i*12}" text-anchor="${anchor}">${esc(l)}</text>`).join("")}`;
     const pos={}; G.left.forEach((n,i)=>pos[n.id]=[lw,yAt(i,G.left.length)]); G.right.forEach((n,i)=>pos[n.id]=[W-rw,yAt(i,G.right.length)]);
     const mx=(lw+W-rw)/2;
     const edges = vis.map(e=>{ const [x1,y1]=pos[e.a], [x2,y2]=pos[e.b];
       return `<path data-a="${e.a}" data-b="${e.b}" pathLength="1" class="edge ${(S.sel&&(e.a===S.sel||e.b===S.sel))?"on":""}" stroke-width="${sw(e.k)}" d="M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}"/>`; }).join("");
-    const lchars = narrow ? Math.max(12, Math.floor((lw-16)/6.4)) : 200, rchars = narrow ? Math.max(10, Math.floor((rw-14)/6.8)) : 200;
     svg = `<svg viewBox="0 0 ${W} ${H}" height="${H}">${head(lw-10,"end",hl,lchars)}${head(W-rw+10,"start",hr,rchars)}${edges}
       ${G.left.map(n=>nodeG(n,pos[n.id][0],pos[n.id][1],"end",narrow?wrapPx(n.label,lw-14):wrapText(n.label,lchars))).join("")}
       ${G.right.map(n=>nodeG(n,pos[n.id][0],pos[n.id][1],"start",narrow?wrapPx(n.label,rw-14):wrapText(n.label,rchars))).join("")}</svg>`;
@@ -1511,7 +1531,7 @@ function openPanel(slugv){
 function renderPanel(keep){
   const ov=document.getElementById("overlay");
   const oldP = keep ? ov.querySelector(".panel") : null, keepTop = oldP ? oldP.scrollTop : 0;
-  if(!S.brand){ ov.innerHTML=""; document.body.style.overflow=""; return; }
+  if(!S.brand){ ov.innerHTML=""; document.body.style.overflow=""; if(S.view) setTitle(); return; }
   const b=S.brand, sec=b.sector, x=t();
   const all=stats(b,ans(sec));
   const cell=(e,l)=>stats(b,ans(sec,e,l));
@@ -1525,7 +1545,7 @@ function renderPanel(keep){
     <div class="all"><span class="hd">${isR?"ChatGPT, FR + AR":x.overall}</span><span>${mv(all)}</span></div>
   </div>`;
   ov.innerHTML = `<div class="scrim" data-close></div>
-  <aside class="panel" role="dialog" aria-modal="true" aria-label="${esc(b.name)}">
+  <aside class="panel" role="dialog" aria-modal="true" aria-label="${esc(b.name)}" tabindex="-1">
     <div class="panel-head"><div class="ph-id">${logoTile(b,"ph-logo")}<div><h2>${esc(b.name)}</h2><div class="meta">${x.sector[sec]}, ${esc(b.origin==="discovered"?x.discovered:x.startList)}</div></div></div>
       <div class="actions"><button type="button" class="pbtn" data-share>${x.share}</button><button type="button" class="pbtn" data-close aria-label="${x.close}">✕</button></div></div>
     <p class="headline">${x.panelSent(pv(all.named,all.n), nf(all.n), x.sectorOf[sec])}</p>
@@ -1541,8 +1561,8 @@ function renderPanel(keep){
     <h3>${x.gridH}</h3>
     <p class="note">${x.gridNote}</p>
     <div class="ptabs">${[[0,0],[0,1],[1,0],[1,1]].map(([e,l])=>`<button type="button" data-combo="${e}-${l}" aria-pressed="${S.combo===e+"-"+l}">${engName(e)} ${l===0?"FR":"AR"}</button>`).join("")}</div>
-    ${dayGrid(b)}
     <div class="gd-key"><span><i style="background:var(--mark)"></i>${x.kFirst}</span><span><i style="background:#B9C4CB"></i>${x.kNamed}</span><span><i style="background:var(--paper-2)"></i>${x.kNot}</span><span><i class="gd-c miss" style="height:12px"></i>${x.kMiss}</span><span><i style="outline:1px dashed #b9c0b6;outline-offset:-1px"></i>${x.kFut}</span></div>
+    ${dayGrid(b)}
     <h3>${x.domH}</h3>
     <table class="domains-t"><thead><tr><th>${x.domain}</th><th class="r">${x.cited}</th><th class="r">${x.read}</th></tr></thead><tbody>
     ${b.domains.map(d=>{ const idx=[...b.dset].filter(i=>D.domains[i]===d||D.domains[i].endsWith("."+d)); const A=ans(sec), G=A.filter(a=>a[1]===0);
@@ -1552,8 +1572,12 @@ function renderPanel(keep){
     <p class="note">${x.domNote}</p>
   </aside>`;
   document.body.style.overflow="hidden";
+  setTitle();
   if(oldP){ const np=ov.querySelector(".panel"); if(np){ np.style.animation="none"; ov.querySelector(".scrim")?.style.setProperty("animation","none"); np.scrollTop=keepTop; } }
+  else ov.querySelector(".panel")?.focus({preventScroll:true}); // a dialog takes focus when it opens
 }
+// after the brand file closes, focus goes back to the card or button that opened it
+function backFocus(slug){ document.querySelector(`#app [data-brand="${slug}"]`)?.focus({preventScroll:true}); }
 function trendChart(b){
   const sec=b.sector, W=PCW(), H=220, lw=34, top=14, bot=24, ph=H-top-bot, cw=(W-lw-8)/(D.meta.days-1);
   const X=d=>lw+d*cw, Y=v=>top+ph*(1-v);
@@ -1629,12 +1653,12 @@ document.addEventListener("click", ev=>{
   let el;
   if(el=q("[data-lang]")){ S.lang=el.dataset.lang; try{localStorage.setItem("dia-lang",S.lang);}catch(e){} render(false); if(S.brand) renderPanel(); return; }
   if(el=q("[data-brand]")){ ev.preventDefault(); location.hash="marque-"+el.dataset.brand; return; }
-  if(el=q("[data-close]")){ S.brand=null; renderPanel(); const back = S.view==="explorer"?"explorer-"+S.sector:S.view; history.replaceState(null,"","#"+back); return; }
+  if(el=q("[data-close]")){ const was=S.brand?.slug; S.brand=null; renderPanel(); const back = S.view==="explorer"?"explorer-"+S.sector:S.view; history.replaceState(null,"","#"+back); if(was) backFocus(was); return; }
   if(el=q("[data-share]")){ const url=location.href; const done=()=>toast(t().copied);
     try{ navigator.clipboard.writeText(url).then(done,()=>toast(url)); }catch(e){ toast(url); } return; }
   if(el=q(".thit")){ if(Date.now()-scrubEnd>400) trendTip(el); return; }
-  if(el=q("[data-pm]")){ S.pm=el.dataset.pm; renderPanel(true); return; }
-  if(el=q("[data-combo]")){ S.combo=el.dataset.combo; renderPanel(true); return; }
+  if(el=q("[data-pm]")){ S.pm=el.dataset.pm; renderPanel(true); document.querySelector(`.panel [data-pm="${S.pm}"]`)?.focus({preventScroll:true}); return; }
+  if(el=q("[data-combo]")){ S.combo=el.dataset.combo; renderPanel(true); document.querySelector(`.panel [data-combo="${S.combo}"]`)?.focus({preventScroll:true}); return; }
   if(el=q("[data-casei]")){ S.caseI=+el.dataset.casei; render(false); return; }
   if(el=q("[data-case]")){ const f=caseFiles()[+el.dataset.case]; Object.assign(S,{eng:"all",lng:"all",sel:null,hov:null,bSort:"pct",src:"cited",fs:false,cmp:"lang",cmpM:"named",cmpSort:"pct",cmpNeed:"all"},f.go()); return; }
   if(el=q("[data-set]")){ const k=el.dataset.set; let v=el.dataset.val; if(v!=="all"&&!isNaN(+v)) v=+v; S[k]=v; if(k==="conn"||k==="src"){ S.sel=null; S.hov=null; } render(false); return; }
@@ -1654,6 +1678,11 @@ document.addEventListener("keydown", ev=>{
   if((ev.key==="ArrowDown"||ev.key==="ArrowUp") && ev.target.matches?.(".dd-menu [role=option]")){ ev.preventDefault(); const all=[...ev.target.parentElement.children], i=all.indexOf(ev.target); all[Math.max(0,Math.min(all.length-1,i+(ev.key==="ArrowDown"?1:-1)))].focus(); }
   if(ev.key==="Escape" && S.fs && !S.brand){ setFs(false); return; }
   if(ev.key==="Escape" && S.brand){ document.querySelector("[data-close]")?.click(); }
+  // Tab stays inside the open brand file
+  if(ev.key==="Tab" && S.brand){ const p=document.querySelector(".panel"); const f=p?[...p.querySelectorAll("button,a[href],summary")].filter(e=>e.offsetParent!==null):[];
+    if(f.length){ const a=document.activeElement, out=!p.contains(a)||a===p;
+      if(ev.shiftKey && (a===f[0]||out)){ ev.preventDefault(); f[f.length-1].focus(); }
+      else if(!ev.shiftKey && (a===f[f.length-1]||!p.contains(a))){ ev.preventDefault(); f[0].focus(); } } }
   if((ev.key==="Enter"||ev.key===" ") && ev.target.matches?.("[data-node]")){ ev.preventDefault(); ev.target.dispatchEvent(new MouseEvent("click",{bubbles:true})); }
 });
 document.addEventListener("change", ev=>{ if(ev.target.matches?.("[data-cmpneed]")){ const v=ev.target.value; S.cmpNeed = v==="all"?"all":+v; render(false); } });
