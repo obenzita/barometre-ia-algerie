@@ -1698,7 +1698,16 @@ document.addEventListener("keydown", ev=>{
 });
 document.addEventListener("change", ev=>{ if(ev.target.matches?.("[data-cmpneed]")){ const v=ev.target.value; S.cmpNeed = v==="all"?"all":+v; render(false); } });
 document.addEventListener("input", ev=>{ if(ev.target.matches("[data-search]")) runSearch(ev.target); });
-let rz; window.addEventListener("resize", ()=>{ clearTimeout(rz); rz=setTimeout(()=>{ render(false); if(S.brand) renderPanel(true); },150); });
+// Phones fire "resize" every time the browser toolbar hides or shows during a scroll: only the height changes.
+// Re-rendering there rebuilt the page mid-scroll and threw the reader back to the top. So a height-only change
+// is ignored, except where the board is sized on the height (full screen, and the desktop board).
+let rz, rzW=window.innerWidth;
+window.addEventListener("resize", ()=>{ clearTimeout(rz); rz=setTimeout(()=>{
+  const w=window.innerWidth, sameW = w===rzW; rzW=w;
+  if(sameW && !(S.fs || (S.view==="explorer" && w>=1000))) return;
+  const y=window.scrollY; render(false); if(S.brand) renderPanel(true);
+  if(Math.abs(window.scrollY-y)>1) window.scrollTo(0,y); // a re-render must not move the reader
+},150); });
 const canHover = window.matchMedia("(hover: hover)").matches;
 function hover(id){
   if(S.view==="explorer" && (S.conn==="pair"||S.conn==="domain")){ const nh = id && (id[0]==="b"||(S.conn==="domain"&&id[0]==="d")) ? id : null; if(nh!==(S.hov||null)){ S.hov=nh; renderBoard(); } }
