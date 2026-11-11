@@ -620,6 +620,17 @@ body{margin:0}
 @media (max-width:640px){.bcard{grid-template-columns:auto auto minmax(0,1fr);grid-template-areas:"rk lg nm" "v v v" "bar bar bar";column-gap:8px}.bc-rk{display:block;min-width:0}.bcard .bc-logo{width:48px;height:30px}}
 /* the brand file takes focus when it opens */
 .panel:focus{outline:none}
+
+/* ===== v71: compare rows on phones. Name, both values and the gap on one line, the track under it.
+   The column labels sit right above their values (in v68 they sat above the axis, next to "0 %" and "25 %"). ===== */
+@media (max-width:640px){
+  .dp-row{grid-template-columns:minmax(0,1fr) 48px 48px 72px;grid-template-areas:"n . . ." "t t t t";column-gap:8px;row-gap:6px;padding:10px 0 9px}
+  .dp.dp-e .dp-row{grid-template-columns:minmax(0,1fr) 52px 52px 100px}
+  .dp-vals>span{grid-row:1;text-align:right}
+  .dp-vals>span:first-child{grid-column:2}.dp-vals>span:last-child{grid-column:3}
+  .dp-gap{grid-row:1;grid-column:4}
+  .dp-head{grid-template-areas:". . . ." "t t t t";row-gap:4px;padding:0 0 4px;align-items:end}
+}
 </style>
 
 </head>
@@ -1115,7 +1126,7 @@ function cmpChart(sec, mode, m, limit, opts={}){
       <div class="dp-track">${both?`<i class="dp-bar" style="left:${a}%;width:${b-a}%"></i>`:""}${dot(r.q,c1,l1)}${dot(r.p,c0,l0)}</div>
       <span class="dp-vals"><span style="color:${c0}">${pv(r.p[m],r.p.n)}</span><span style="color:${c1}">${pv(r.q[m],r.q.n)}</span></span>
       <span class="dp-gap">${gap(r)}</span></div>`; }).join("");
-  const svg = `<div class="dp">${head}${body}</div>`;
+  const svg = `<div class="dp ${isLang?"":"dp-e"}">${head}${body}</div>`;
   return `<div class="cmp-legend"><span><i class="dot" style="background:${c0}"></i>${l0}</span><span><i class="dot" style="background:${c1}"></i>${l1}</span></div>
     <p class="cap" style="margin:6px 0 0">${(opts.need!==undefined&&opts.need!=="all")?`<b style="color:var(--paper-ink)">${esc(needName(D.prompts[opts.need]))}.</b> `:""}${x.cmpCap(m,l0,nf(a0.length),l1,nf(a1.length))}</p>
     ${exTxt&&!opts.noEx?`<p class="cap" style="margin:4px 0 14px;color:var(--paper-ink)">${esc(exTxt)}</p>`:`<div style="height:10px"></div>`}
