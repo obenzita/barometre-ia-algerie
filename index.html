@@ -44,33 +44,15 @@
    The explorer adds its own parts (.xbar, .xpick, .xs, .defs, .tbl, .heat, .tip), documented above its styles.
    The guided story never scrolls on a wide screen. The explorer is one long page and does. */
 :root{
-  color-scheme:light;
-  --ground:#F5F5F7; --panel:#FFFFFF; --raised:#ECEDF2; --line:#D6D8E0; --hatch:#A2A7B5;
-  --ink:#15161B; --soft:#4D5260; --faint:#636878;
-  --first:#C68A00; --on-first:#1A1500; --named:#D42B6A; --named-wash:rgba(212,43,106,.15); --empty:#E1E3EA;
-  --gpt:#0E8F7E; --gem:#DD6B20; --cited:#1E8E4E; --refused:#D43A2F; --lost:#B0604F; --t-refused:#C2281D; --t-lost:#9A4E3F; --fr:#6F9400; --ar:#A24BD0; --t-fr:#526E00; --t-ar:#8E35B8;
-  --title:#8A6100; --t-first:#8A6100; --t-named:#C2185B; --t-gpt:#07655A; --t-gem:#9C4209; --t-cited:#1A7A43;
-  --action:#5B34C9; --action-edge:#5B34C9; --on-action:#FFFFFF; --on-mark:#FFFFFF; --select:#5B34C9; --select-wash:rgba(91,52,201,.10);
-  --scrim:rgba(21,22,27,.46);
+  /* one look only, dark: Oussama removed the light mode on 2026-11-13 */
+  --ground:#0B0C10; --panel:#14161C; --raised:#1C1F27; --line:#2C303B; --hatch:#5A6072;
+  --ink:#ECEDF1; --soft:#A4A9B6; --faint:#80869A;
+  --first:#FBD13D; --on-first:#1A1500; --named:#E5437E; --named-wash:rgba(229,67,126,.26); --empty:#252833;
+  --gpt:#1FAF9A; --gem:#E8833A; --cited:#4CC27A; --refused:#FF5C50; --lost:#D9897B; --t-refused:#FF6B60; --t-lost:#E39A8D; --fr:#B8D94A; --ar:#D48CF5; --t-fr:#B8D94A; --t-ar:#D48CF5;
+  --title:#FBD13D; --t-first:#FBD13D; --t-named:#F2669A; --t-gpt:#2CC5AE; --t-gem:#F5924A; --t-cited:#5BD08A;
+  --action:#6D45D9; --action-edge:#8F6CF0; --on-action:#FFFFFF; --on-mark:#0B0C10; --select:#BBA5FF; --select-wash:rgba(167,139,250,.16);
+  --scrim:rgba(4,4,7,.74); color-scheme:dark;
   --text:"Readex Pro",system-ui,"Segoe UI",sans-serif;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --ground:#0B0C10; --panel:#14161C; --raised:#1C1F27; --line:#2C303B; --hatch:#5A6072;
-  --ink:#ECEDF1; --soft:#A4A9B6; --faint:#80869A;
-  --first:#FBD13D; --on-first:#1A1500; --named:#E5437E; --named-wash:rgba(229,67,126,.26); --empty:#252833;
-  --gpt:#1FAF9A; --gem:#E8833A; --cited:#4CC27A; --refused:#FF5C50; --lost:#D9897B; --t-refused:#FF6B60; --t-lost:#E39A8D; --fr:#B8D94A; --ar:#D48CF5; --t-fr:#B8D94A; --t-ar:#D48CF5;
-  --title:#FBD13D; --t-first:#FBD13D; --t-named:#F2669A; --t-gpt:#2CC5AE; --t-gem:#F5924A; --t-cited:#5BD08A;
-  --action:#6D45D9; --action-edge:#8F6CF0; --on-action:#FFFFFF; --on-mark:#0B0C10; --select:#BBA5FF; --select-wash:rgba(167,139,250,.16);
-  --scrim:rgba(4,4,7,.74); color-scheme:dark;
-}}
-:root[data-theme="dark"]{
-  --ground:#0B0C10; --panel:#14161C; --raised:#1C1F27; --line:#2C303B; --hatch:#5A6072;
-  --ink:#ECEDF1; --soft:#A4A9B6; --faint:#80869A;
-  --first:#FBD13D; --on-first:#1A1500; --named:#E5437E; --named-wash:rgba(229,67,126,.26); --empty:#252833;
-  --gpt:#1FAF9A; --gem:#E8833A; --cited:#4CC27A; --refused:#FF5C50; --lost:#D9897B; --t-refused:#FF6B60; --t-lost:#E39A8D; --fr:#B8D94A; --ar:#D48CF5; --t-fr:#B8D94A; --t-ar:#D48CF5;
-  --title:#FBD13D; --t-first:#FBD13D; --t-named:#F2669A; --t-gpt:#2CC5AE; --t-gem:#F5924A; --t-cited:#5BD08A;
-  --action:#6D45D9; --action-edge:#8F6CF0; --on-action:#FFFFFF; --on-mark:#0B0C10; --select:#BBA5FF; --select-wash:rgba(167,139,250,.16);
-  --scrim:rgba(4,4,7,.74); color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
@@ -489,9 +471,7 @@ a.tag:hover{color:var(--ink)}
 .heat td.t{position:sticky;left:0;z-index:1;background:var(--ground);padding:2px 10px 2px 4px;min-width:128px;max-width:230px;line-height:1.2}
 .heat td.t.on{font-weight:500}
 .heat td.c{min-width:36px;height:32px;text-align:center;font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums;cursor:pointer;background:color-mix(in srgb,var(--hc) calc(var(--v) * 1%),var(--ground));box-shadow:inset 0 0 0 1px var(--ground)}
-.heat td.c{color:var(--tl)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .heat td.c{color:var(--td)}}
-:root[data-theme="dark"] .heat td.c{color:var(--td)}
+.heat td.c{color:var(--td)}
 .heat td.z{cursor:pointer;height:32px;min-width:36px}
 .heat tbody tr:hover td.t,.heat tbody tr:hover td.z,.heat tbody tr.on td.t,.heat tbody tr.on td.z{background:var(--raised)}
 .heat tbody tr:hover td.c,.heat tbody tr.on td.c{box-shadow:inset 0 0 0 1px var(--raised)}
@@ -607,7 +587,6 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
   <div class="wrap">
     <span class="wordmark">AI Barometer Algeria</span>
     <div class="seg sm fit mode" id="mode" role="group" aria-label="View"><button type="button" data-v="story"><span class="long">Guided story</span><span class="short">Story</span></button><button type="button" data-v="explore">Explorer</button><button type="button" data-v="methodology">Method</button></div>
-    <button class="btn sm icon" id="theme" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="theme-ico"/></svg></button>
   </div>
   <div class="wrap"><div class="steps" id="steps" aria-hidden="true"></div><nav class="tabs" id="e-nav" aria-label="Sections of the explorer" hidden></nav><nav class="tabs" id="md-nav" aria-label="Sections of the method" hidden></nav></div>
 </header>
@@ -1899,8 +1878,8 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2068]],"gemini":[["3.
     const hbody = h('tbody');
     hq.forEach(qi => { const tr = h('tr', pin && pin[0] === qi ? 'on' : ''), t = h('td', 't' + (pin && pin[0] === qi ? ' on' : ''), D.questions[qi].need); t.dataset.tip = D.questions[qi].need + '\n' + D.questions[qi].en; tr.append(t);
       hb.forEach(b => { const c = cellNote(qi, b), p = c.p, isPin = pin && pin[0] === qi && pin[1] === b, td = h('td', (p ? 'c' : 'z') + (isPin ? ' sel' : ''), p || '');
-        // black or white, whichever reads better on this box: the share at which it flips was computed for each theme
-        if (p) { td.style.setProperty('--v', 30 + .7 * p); td.style.setProperty('--hc', first ? 'var(--first)' : 'var(--named)'); td.style.setProperty('--tl', !first && p >= 94 ? '#fff' : '#000'); td.style.setProperty('--td', p >= (first ? 33 : 86) ? '#000' : '#fff'); }
+        // black or white, whichever reads better on this box: the share at which it flips was computed from the colours
+        if (p) { td.style.setProperty('--v', 30 + .7 * p); td.style.setProperty('--hc', first ? 'var(--first)' : 'var(--named)'); td.style.setProperty('--td', p >= (first ? 33 : 86) ? '#000' : '#fff'); }
         td.dataset.tip = B[b].name + '\n' + D.questions[qi].need + '\n' + c.text;
         td.setAttribute('role', 'button'); td.setAttribute('aria-pressed', !!isPin); td.setAttribute('aria-label', B[b].name + ', ' + D.questions[qi].need + '. ' + c.text);
         td.tabIndex = (pin ? isPin : qi === hq[0] && b === hb[0]) ? 0 : -1;
@@ -2030,17 +2009,6 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2068]],"gemini":[["3.
   ['#sh-close', '#pk-close'].forEach(s => { $(s).onclick = closeOver; });
   document.querySelectorAll('.over').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOver(); }));
 
-  // ---------- light or dark ----------
-  const root = document.documentElement;
-  // The page follows the device until the visitor uses the switch; after that it keeps the visitor's choice.
-  const darkDevice = matchMedia('(prefers-color-scheme: dark)');
-  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : darkDevice.matches;
-  const SUN = 'M12 8a4 4 0 1 0 0 8a4 4 0 0 0 0-8zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4', MOON = 'M20 14.5A8 8 0 0 1 9.5 4a7 7 0 1 0 10.5 10.5z';
-  const paintTheme = () => { const to = isDark() ? 'light' : 'dark'; $('#theme-ico').setAttribute('d', to === 'light' ? SUN : MOON); $('#theme').setAttribute('aria-label', 'Switch to ' + to + ' mode'); $('#theme').title = 'Switch to ' + to + ' mode'; };
-  try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') root.dataset.theme = t; } catch (e) {}
-  $('#theme').onclick = () => { const v = isDark() ? 'light' : 'dark'; root.dataset.theme = v; try { localStorage.setItem('theme', v); } catch (e2) {} paintTheme(); };
-  darkDevice.addEventListener('change', paintTheme);
-  paintTheme();
 
   // ---------- navigation ----------
   const cur = () => { const x = location.hash.slice(1); return ALL.includes(x) ? x : 'pick'; };
