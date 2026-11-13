@@ -93,10 +93,11 @@ h2{font-size:clamp(25px,6vw,32px);line-height:1.12}
 .steps .part.on span{color:var(--ink)}
 .steps .ticks{flex:1;display:flex;gap:3px;min-width:0}
 .steps i{flex:1;height:3px;border-radius:2px;background:var(--empty)}
-@media (max-width:619px){.steps{gap:10px} .steps .part{gap:6px} .steps .part span{font-size:11px}}
+@media (max-width:619px){.steps{gap:10px} .steps .part{gap:6px} .steps .part span{font-size:11px} .top .wrap:first-child{row-gap:5px;padding-block:8px 7px}}
 .steps i.done{background:var(--soft)}
 main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;overflow-anchor:none}
 main .wrap{padding-block:20px 24px;min-height:100%;display:flex;flex-direction:column}
+@media (max-width:619px){main .wrap{padding-block:16px 20px}}
 .screen{display:flex;flex-direction:column;gap:16px;flex:1}
 .cols,.col{display:flex;flex-direction:column;gap:16px;min-width:0}
 .nav{flex:none;border-top:1px solid var(--line)}
@@ -613,7 +614,7 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
       <h1>Which brands does AI recommend in Algeria?</h1>
       <div>
         <p class="lede">We asked ChatGPT and Gemini <span id="p-nq">47</span> real questions. Every day.</p>
-        <p class="lede go" id="p-go"></p>
+        <p class="lede go">Pick one and see what they answered.</p>
       </div>
       <p class="note" id="p-note"></p>
     </div>
@@ -1301,16 +1302,12 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
   }
   const PLAYED = { right: 'Guessed right', wrong: 'Guessed wrong', seen: 'Seen' };
   function drawPick() {
-    const list = $('#qlist'), n = playedN(), all = OPEN.length; list.textContent = '';
+    const list = $('#qlist'); list.textContent = '';
     OPEN.forEach(i => {
       const q = D.questions[i], b = h('button', 'card'), top = h('span', '', SECTOR[q.sector]), was = st.played[i]; b.type = 'button';
       if (was) top.append(h('i', was, PLAYED[was]));
       b.append(top, h('b', '', q.en)); b.onclick = () => pickQ(i); list.append(b);
     });
-    const g = OPEN.filter(i => st.played[i] === 'right' || st.played[i] === 'wrong').length, r = OPEN.filter(i => st.played[i] === 'right').length;
-    $('#p-go').textContent = !n ? 'Pick one and see what they answered.'
-      : n < all ? 'You played ' + n + ' of ' + all + '. Pick another one, or go on to the whole study.'
-      : 'You played all ' + (all === 4 ? 'four' : all) + (g ? ' and guessed right on ' + r + ' of ' + g : '') + '. Go on to the whole study.';
   }
 
   let ansRun = 0;
@@ -2074,10 +2071,10 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
     $('#steps').hidden = place; $('#e-nav').hidden = id !== 'explore'; $('#md-nav').hidden = id !== 'methodology';
     document.querySelectorAll('#steps i').forEach((el, k) => el.classList.toggle('done', k <= i));
     [...$('#steps').children].forEach((el, k) => el.classList.toggle('on', (i >= OWN) === (k === 1)));
-    const back = $('#nav-back'), next = $('#nav-next'), last = i === ORDER.length - 1, onward = id === 'pick' && playedN() > 0;
-    back.hidden = i === 0; next.hidden = !NEXT[id] && !last && !onward;
+    const back = $('#nav-back'), next = $('#nav-next'), last = i === ORDER.length - 1;
+    back.hidden = i === 0; next.hidden = !NEXT[id] && !last;
     // leaving the visitor's question for the part everyone sees is said on the button
-    next.firstChild.textContent = id === 'days' ? 'Next, the whole study' : 'Next'; next.lastChild.textContent = last ? 'Explorer' : onward ? 'The whole study' : (NEXT[id] || '');
+    next.firstChild.textContent = id === 'days' ? 'Next, the whole study' : 'Next'; next.lastChild.textContent = last ? 'Explorer' : (NEXT[id] || '');
     const again = id !== 'days' || playedN() >= OPEN.length; $('#nav-again').hidden = again; $('#d-again-wrap').hidden = again;
     $('.nav').hidden = place || (back.hidden && next.hidden); $('#nav-note').hidden = id !== 'brand';
     $('#main').scrollTop = 0;
@@ -2085,7 +2082,7 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
     focusBack(at);
   }
   $('#nav-back').onclick = () => go(ORDER[Math.max(0, ORDER.indexOf(cur()) - 1)]);
-  $('#nav-next').onclick = () => { const i = ORDER.indexOf(cur()); go(i === ORDER.length - 1 ? 'explore' : i === 0 ? ORDER[OWN] : ORDER[i + 1]); };
+  $('#nav-next').onclick = () => { const i = ORDER.indexOf(cur()); go(i === ORDER.length - 1 ? 'explore' : ORDER[i + 1]); };
   ['#nav-again', '#d-again'].forEach(s => { $(s).onclick = () => go('pick'); });
   addEventListener('hashchange', () => show(cur()));
   addEventListener('keydown', e => {
