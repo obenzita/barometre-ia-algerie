@@ -10,6 +10,7 @@
 <meta property="og:description" content="Which brands ChatGPT and Gemini recommend in Algeria. 47 everyday questions, in French and in Arabic, asked every day for 28 days.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0B0C10">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <title>AI Barometer Algeria</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500&display=swap">
 <style>
@@ -84,15 +85,22 @@ h2{font-size:clamp(25px,6vw,32px);line-height:1.12}
 @media (max-width:619px){.wordmark{white-space:normal;font-size:15px;max-width:7.6em} .seg.mode{grid-auto-columns:auto} .seg.mode .long{display:none} .seg.mode .short{display:inline} .seg.fit.mode button{padding-inline:8px;font-size:12.5px}}
 @media (max-width:359px){.wordmark{max-width:5.4em;font-size:12.5px} .top .wrap{gap:6px}}
 .top .wrap+.wrap{padding-block:0}
-.steps{display:flex;gap:3px;padding-bottom:9px;width:100%}
+.top .wrap:first-child{flex-wrap:wrap;row-gap:8px}
+.steps{display:flex;gap:16px;order:3;flex-basis:100%;min-width:0}   /* under the title on a phone, beside it on a desktop */
+@media (min-width:1000px){.top .wrap:first-child{flex-wrap:nowrap} .steps{order:0;flex:1 1 0;margin-inline:20px}}
+.steps .part{display:flex;align-items:center;gap:8px;min-width:0;flex:var(--n) 1 auto}
+.steps .part span{flex:none;font-size:12px;line-height:1;color:var(--faint);white-space:nowrap}
+.steps .part.on span{color:var(--ink)}
+.steps .ticks{flex:1;display:flex;gap:3px;min-width:0}
 .steps i{flex:1;height:3px;border-radius:2px;background:var(--empty)}
+@media (max-width:619px){.steps{gap:10px} .steps .part{gap:6px} .steps .part span{font-size:11px}}
 .steps i.done{background:var(--soft)}
 main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;overflow-anchor:none}
 main .wrap{padding-block:20px 24px;min-height:100%;display:flex;flex-direction:column}
 .screen{display:flex;flex-direction:column;gap:16px;flex:1}
 .cols,.col{display:flex;flex-direction:column;gap:16px;min-width:0}
 .nav{flex:none;border-top:1px solid var(--line)}
-.nav .wrap{display:flex;gap:10px;padding-block:10px;align-items:stretch}
+.nav .wrap{display:flex;gap:10px;padding-block:10px 16px;align-items:stretch}
 .nav .spacer{flex:1;display:flex;align-items:center;justify-content:center;min-width:0}
 .wide-only{display:none}
 @media (min-width:1000px){.wide-only{display:inline}.narrow-only{display:none}}
@@ -117,6 +125,9 @@ main .wrap{padding-block:20px 24px;min-height:100%;display:flex;flex-direction:c
 .btn:disabled{opacity:.4;cursor:default;border-color:var(--line)}
 .btn.next{display:grid;justify-items:start;text-align:left;padding-block:5px;gap:1px}
 .btn.next small{font-size:12px;font-weight:400;opacity:.85}
+#nav-again{display:none}
+@media (min-width:1000px){#nav-again{display:inline-flex}}
+#d-again{width:100%}
 .row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
 
 /* kit: choice between a few options */
@@ -213,7 +224,9 @@ mark.hit{outline:2px solid var(--ink);outline-offset:2px}
 @media (min-width:620px){.qlist{grid-template-columns:1fr 1fr}}
 button.card{text-align:left;display:grid;gap:4px;align-content:start}
 button.card:hover{border-color:var(--action-edge)}
-button.card span{color:var(--soft);font-size:13.5px}
+button.card span{color:var(--soft);font-size:13.5px;display:flex;justify-content:space-between;gap:10px}
+button.card span i{font-style:normal;color:var(--faint);white-space:nowrap}
+button.card span i.right{color:var(--ink)}
 button.card b{font-size:19px;line-height:1.25}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .opts .btn{font-size:18px;min-height:56px;background:var(--panel)}
@@ -547,7 +560,7 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
 .dialog .body{padding:14px 16px;display:flex;flex-direction:column;gap:12px;min-height:0;overflow-y:auto}
 .dialog footer{flex:none;display:flex;justify-content:space-between;gap:10px;padding:10px 16px;border-top:1px solid var(--line)}
 @media (min-width:1000px) and (max-height:720px){
-  .top .wrap{padding-block:6px} .steps{padding-bottom:6px} .nav .wrap{padding-block:6px}
+  .top .wrap{padding-block:6px} .nav .wrap{padding-block:6px 12px}
   main .wrap{padding-block:12px}
   .screen,.col{gap:12px} .cols{gap:12px 36px}
   h1{font-size:40px} h2{font-size:26px}
@@ -565,7 +578,7 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
   .xbar{padding:6px 8px;gap:6px} .xbar .seg.sm button{min-height:30px} .xpick{min-height:30px} .xbody{gap:22px} .xs{padding:16px;gap:12px} .xs h3{font-size:22px} .tabs button{padding-block:5px 4px}
 }
 @media (min-width:1000px) and (max-height:580px){
-  .top .wrap{padding-block:4px} .nav .wrap{padding-block:4px} main .wrap{padding-block:8px}
+  .top .wrap{padding-block:4px} .nav .wrap{padding-block:4px 10px} main .wrap{padding-block:8px}
   .screen,.col{gap:9px} h2{font-size:24px} .fig{padding:8px 12px;gap:8px} .step{padding:8px;gap:6px} .vals div{padding:3px 0} .verdict{font-size:18px} .pk-opt{min-height:23px;padding-block:1px;font-size:13px} .pk{gap:3px}
 }
 @media (max-width:380px){.seg button{font-size:13px;padding-inline:2px}}
@@ -587,9 +600,10 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
 <header class="top">
   <div class="wrap">
     <span class="wordmark">AI Barometer Algeria</span>
+    <div class="steps" id="steps" aria-hidden="true"></div>
     <div class="seg sm fit mode" id="mode" role="group" aria-label="View"><button type="button" data-v="story"><span class="long">Guided story</span><span class="short">Story</span></button><button type="button" data-v="explore">Explorer</button><button type="button" data-v="methodology">Method</button></div>
   </div>
-  <div class="wrap"><div class="steps" id="steps" aria-hidden="true"></div><nav class="tabs" id="e-nav" aria-label="Sections of the explorer" hidden></nav><nav class="tabs" id="md-nav" aria-label="Sections of the method" hidden></nav></div>
+  <div class="wrap"><nav class="tabs" id="e-nav" aria-label="Sections of the explorer" hidden></nav><nav class="tabs" id="md-nav" aria-label="Sections of the method" hidden></nav></div>
 </header>
 
 <main id="main"><div class="wrap">
@@ -599,7 +613,7 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
       <h1>Which brands does AI recommend in Algeria?</h1>
       <div>
         <p class="lede">We asked ChatGPT and Gemini <span id="p-nq">47</span> real questions. Every day.</p>
-        <p class="lede go">Pick one and see what they answered.</p>
+        <p class="lede go" id="p-go"></p>
       </div>
       <p class="note" id="p-note"></p>
     </div>
@@ -919,6 +933,7 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
           <div class="ends" id="d-ends"></div>
         </div>
         <div class="key" id="d-key"></div>
+        <div class="narrow-only" id="d-again-wrap"><button class="btn" id="d-again" type="button">Try another question</button></div>
       </div>
     </div>
   </section>
@@ -1086,6 +1101,7 @@ code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em
 <footer class="nav"><div class="wrap">
   <button class="btn" id="nav-back" type="button">Back</button>
   <span class="spacer"><span class="note wide-only" id="nav-note" hidden>Your brand is not in the study? <a class="lnk" href="https://benzita.com/#contact" target="_blank" rel="noopener">Ask about it</a>.</span></span>
+  <button class="btn wide-only" id="nav-again" type="button" hidden>Try another question</button>
   <button class="btn primary next" id="nav-next" type="button"><small></small><span></span></button>
 </div></footer>
 
@@ -1134,13 +1150,14 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
 
   const ORDER = ['pick', 'guess', 'answer', 'days', 'method', 'collected', 'sectors', 'brand', 'language', 'assistant', 'sources', 'limits'];
   // The explorer sits outside the guided story: one long page, with its own filters and its own state (st.x).
+  const OWN = 4;   // the first four screens follow the question the visitor picked; the rest is the same for everyone
   const PLACES = ['explore', 'methodology'], ALL = [...ORDER, ...PLACES];   // the two long pages beside the guided story
   const NEXT = { answer: 'The other days', days: 'How the study works', method: 'What we collected', collected: 'Who is mentioned first', sectors: 'Look up a brand', brand: 'French or Arabic', language: 'ChatGPT or Gemini', assistant: 'Where the answers come from', sources: 'What it does not tell us' };
   const STATE = { first: 'Mentioned first', named: 'Mentioned', absent: 'Not mentioned', refused: 'The assistant refused to answer', lost: 'Answer lost in collection' };
 
   // what the visitor chose; kept across reloads
   const KEY = 'ai-barometer-state-2';   // -2: questions are now numbered among all 47
-  const st = { q: D.questions.findIndex(q => q.open), guess: null, cond: 0, track: null, sector: null, brand: null, fEng: 'all', fLang: 'all', bEng: 'all', bLang: 'all', last: 'pick',
+  const st = { q: D.questions.findIndex(q => q.open), guess: null, cond: 0, track: null, sector: null, brand: null, fEng: 'all', fLang: 'all', bEng: 'all', bLang: 'all', last: 'pick', played: {},
     x: { sector: 'all', eng: 'all', lang: 'all', from: 0, to: N - 1, brand: null, q: null, measure: 'm', srcKind: 'all', pin: null, allCols: false, nB: 15, nQ: 12, nS: 25, sortB: ['m', -1], sortQ: ['i', 1], sortS: ['n', -1] } };
   try {
     const s = JSON.parse(localStorage.getItem(KEY) || 'null') || {};
@@ -1152,6 +1169,7 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
     ['fEng', 'bEng'].forEach(k => { if (['all', 'chatgpt', 'gemini'].includes(s[k])) st[k] = s[k]; });
     ['fLang', 'bLang'].forEach(k => { if (['all', 'fr', 'ar'].includes(s[k])) st[k] = s[k]; });
     ['guess', 'track', 'brand'].forEach(k => { if (k in s && brandOk(s[k])) st[k] = s[k]; });
+    Object.entries(s.played || {}).forEach(([k, v]) => { if (D.questions[k] && D.questions[k].open && ['right', 'wrong', 'seen'].includes(v)) st.played[k] = v; });
     const x = s.x || {}, X0 = st.x;
     if (x.sector === 'all' || SECTOR[x.sector]) X0.sector = x.sector;
     if (['all', 'chatgpt', 'gemini'].includes(x.eng)) X0.eng = x.eng;
@@ -1270,6 +1288,30 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
     return [...fact, ' Your guess ', got ? [B[g].name, 'named'] : B[g].name, got ? ' came first on ' + got + '.' : ' never came first.'];
   }
   const CHIPS = 'Brands mentioned, in order. Select one to find it.';
+  // The story has two parts: the visitor's own question (four screens), then the whole study, the same for everyone.
+  // A question counts as played once its answer was seen; the guess is judged like the verdict, on ChatGPT in French over every day.
+  const OPEN = D.questions.map((q, i) => q.open ? i : -1).filter(i => i >= 0);
+  const playedN = () => OPEN.filter(i => st.played[i]).length;
+  function markPlayed() {
+    const q = Q(), cnt = {};
+    q.cells[0].forEach(c => { if (c.s === 0 && c.f >= 0) cnt[c.f] = (cnt[c.f] || 0) + 1; });
+    const top = Math.max(0, ...Object.values(cnt));
+    st.played[st.q] = st.guess == null ? 'seen' : top && cnt[st.guess] === top ? 'right' : 'wrong';
+    save();
+  }
+  const PLAYED = { right: 'Guessed right', wrong: 'Guessed wrong', seen: 'Seen' };
+  function drawPick() {
+    const list = $('#qlist'), n = playedN(), all = OPEN.length; list.textContent = '';
+    OPEN.forEach(i => {
+      const q = D.questions[i], b = h('button', 'card'), top = h('span', '', SECTOR[q.sector]), was = st.played[i]; b.type = 'button';
+      if (was) top.append(h('i', was, PLAYED[was]));
+      b.append(top, h('b', '', q.en)); b.onclick = () => pickQ(i); list.append(b);
+    });
+    const g = OPEN.filter(i => st.played[i] === 'right' || st.played[i] === 'wrong').length, r = OPEN.filter(i => st.played[i] === 'right').length;
+    $('#p-go').textContent = !n ? 'Pick one and see what they answered.'
+      : n < all ? 'You played ' + n + ' of ' + all + '. Pick another one, or go on to the whole study.'
+      : 'You played all ' + (all === 4 ? 'four' : all) + (g ? ' and guessed right on ' + r + ' of ' + g : '') + '. Go on to the whole study.';
+  }
 
   let ansRun = 0;
   function showAnswer() {
@@ -1304,7 +1346,7 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
     [...el.children].forEach((b, i) => b.setAttribute('aria-pressed', i === st.sector));
   };
   const ENTER = {
-    pick() {},
+    pick() { drawPick(); },
     explore() { openExplorer(); },
     methodology() { drawMethod(); },
     guess() {
@@ -1318,7 +1360,7 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
       const other = $('#g-other'); other.hidden = !others.length;
       other.onclick = () => openPick({ title: 'Pick a brand', options: () => others.map(i => ({ v: i, t: B[i].name })), get: () => null, set: choose });
     },
-    answer() { showAnswer(); },
+    answer() { markPlayed(); showAnswer(); },
     days(g) {
       const q = Q(), cnt = {};
       $('#d-title').textContent = 'The same question asked every day';
@@ -2030,17 +2072,21 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
     press('#mode', place ? id : 'story');
     const i = ORDER.indexOf(id);
     $('#steps').hidden = place; $('#e-nav').hidden = id !== 'explore'; $('#md-nav').hidden = id !== 'methodology';
-    [...$('#steps').children].forEach((el, k) => el.classList.toggle('done', k <= i));
-    const back = $('#nav-back'), next = $('#nav-next'), last = i === ORDER.length - 1;
-    back.hidden = i === 0; next.hidden = !NEXT[id] && !last;
-    next.firstChild.textContent = 'Next'; next.lastChild.textContent = last ? 'Explorer' : (NEXT[id] || '');
+    document.querySelectorAll('#steps i').forEach((el, k) => el.classList.toggle('done', k <= i));
+    [...$('#steps').children].forEach((el, k) => el.classList.toggle('on', (i >= OWN) === (k === 1)));
+    const back = $('#nav-back'), next = $('#nav-next'), last = i === ORDER.length - 1, onward = id === 'pick' && playedN() > 0;
+    back.hidden = i === 0; next.hidden = !NEXT[id] && !last && !onward;
+    // leaving the visitor's question for the part everyone sees is said on the button
+    next.firstChild.textContent = id === 'days' ? 'Next, the whole study' : 'Next'; next.lastChild.textContent = last ? 'Explorer' : onward ? 'The whole study' : (NEXT[id] || '');
+    const again = id !== 'days' || playedN() >= OPEN.length; $('#nav-again').hidden = again; $('#d-again-wrap').hidden = again;
     $('.nav').hidden = place || (back.hidden && next.hidden); $('#nav-note').hidden = id !== 'brand';
     $('#main').scrollTop = 0;
     ENTER[id](gen);
     focusBack(at);
   }
   $('#nav-back').onclick = () => go(ORDER[Math.max(0, ORDER.indexOf(cur()) - 1)]);
-  $('#nav-next').onclick = () => { const i = ORDER.indexOf(cur()); go(i === ORDER.length - 1 ? 'explore' : ORDER[i + 1]); };
+  $('#nav-next').onclick = () => { const i = ORDER.indexOf(cur()); go(i === ORDER.length - 1 ? 'explore' : i === 0 ? ORDER[OWN] : ORDER[i + 1]); };
+  ['#nav-again', '#d-again'].forEach(s => { $(s).onclick = () => go('pick'); });
   addEventListener('hashchange', () => show(cur()));
   addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeOver(); return; }
@@ -2050,14 +2096,13 @@ const D = {"meta":{"method":{"models":{"chatgpt":[["gpt-6",2162]],"gemini":[["3.
   });
 
   // ---------- one-time setup ----------
-  ORDER.forEach(() => $('#steps').append(h('i')));
+  [['Your question', OWN], ['The whole study', ORDER.length - OWN]].forEach(([name, n]) => {
+    const part = h('div', 'part'), ticks = h('div', 'ticks'); part.style.setProperty('--n', n);
+    for (let k = 0; k < n; k++) ticks.append(h('i'));
+    part.append(h('span', '', name), ticks); $('#steps').append(part);
+  });
   $('#p-nq').textContent = D.meta.questions;
   $('#p-note').textContent = 'Answers collected in Algeria from ' + period + '.';
-  D.questions.forEach((q, i) => {
-    if (!q.open) return;
-    const b = h('button', 'card'); b.type = 'button'; b.append(h('span', '', SECTOR[q.sector]), h('b', '', q.en));
-    b.onclick = () => pickQ(i); $('#qlist').append(b);
-  });
   $('#mode').onclick = e => { const b = e.target.closest('button'), v = b && b.dataset.v; if (v) go(v === 'story' ? st.last : v); };
   $('#g-skip').onclick = () => { st.guess = null; st.cond = 0; go('answer'); };
   const setCond = (eng, lang) => { st.cond = D.conds.findIndex(c => c[0] === eng && c[1] === lang); save(); showAnswer(); };
